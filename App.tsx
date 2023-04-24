@@ -10,7 +10,7 @@ Poppins_700Bold
 } from '@expo-google-fonts/poppins'
 
 import AppLoading from 'expo-app-loading';
-import { Dashboard } from './src/screens/Dashboard';
+import { Register } from './src/screens/Register';
 
 export default function App() {
 
@@ -23,7 +23,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme} >
-      <Dashboard/>
+      <Register/>
       <StatusBar style="auto" />
     </ThemeProvider>
   );
