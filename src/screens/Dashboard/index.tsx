@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native'
 
 import { TransactionCardProps } from '../../components/TransactionCard'
 
-export  type TransactionProps =  TransactionCardProps & {
+export  interface TransactionProps extends TransactionCardProps  {
     id: string;
  }
 
@@ -87,12 +87,9 @@ export function Dashboard() {
 
             <TransactionList
                 data={TransactionsData}
-                keyExtractor={ (item : TransactionProps) => item.id}
-                renderItem={({item: TransactionProps}) => <TransactionCard data={item}/>}
+                keyExtractor={ (item) => item as TransactionProps['id'] }
+                renderItem={({item}) => <TransactionCard data={item as TransactionProps}/>}
                
-
-            
-            
             />
 
          

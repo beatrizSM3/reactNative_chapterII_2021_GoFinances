@@ -4,7 +4,7 @@ import { categories } from '../../utils/category';
 import { Button } from '../../components/Forms/Button';
 
 
-interface Category {
+export interface Category {
     key: string;
     name: string;
 }
