@@ -104,7 +104,7 @@ export const Title = styled.Text`
 
     font-size: ${RFValue(18)}px;
     font-family: ${({ theme }) => theme.fonts.regular};
-    margin: 20px 0 20px 0 ;
+    margin: 20px 0 12px 0 ;
     
 `
 export const TransactionList = styled(

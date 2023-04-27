@@ -2,52 +2,71 @@
 import { HighLightCard } from '../../components/HighLightCard'
 import { TransactionCard } from '../../components/TransactionCard'
 import { Container, Header, UserInfo, Photo, UserGreeting, UserName, User, UserWrapper, Icon, HighlightCards, LogoutButton, Transactions, Title, TransactionList } from './styles'
-import { TouchableOpacity } from 'react-native'
+
 
 import { TransactionCardProps } from '../../components/TransactionCard'
+import { useEffect, useState } from 'react'
+import { getData } from '../../asyncStorage/getData'
+import { format } from 'date-fns';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export  interface TransactionProps extends TransactionCardProps  {
     id: string;
+   
  }
 
 export function Dashboard() {
 
-    const TransactionsData: TransactionProps[] = [
-        {
-            id: '1',
-            type: 'positive',
-            title: 'Desenvolvimento de site',
-            amount: 'R$ 12.000,00',
-            category: {
-                name: 'Vendas',
-                icon: 'dollar-sign'
-            },
-            date: '13/04/2022'
-        },
-        {
-            id: '2',
-            type: 'negative',
-            title: 'Hamburgueria Pizzy',
-            amount: 'R$ 59,00',
-            category: {
-                name: 'Alimentação',
-                icon: 'coffee'
-            },
-            date: '10/04/2022'
+   const [transactionsData, setTransactionsData] = useState<TransactionProps[]>([])
+
+
+   async function loadTransactions() {
+
+
+        try {
+            const response = await  getData()
+         
             
-        },
-        {
-            id: '3',
-            type: 'negative',
-            title: 'Aluguel do apartamento',
-            amount: 'R$ 1.200,00',
-            category: {
-                name: 'Casa',
-                icon: 'shopping-bag'
-            },
-            date: '10/04/2022'
+            console.log(response, 'response')
+           
+          
+
+                
+            const transactionsFormatted: TransactionProps[]= response.map((item: TransactionProps) => {
+                const amount = Number(item.amount).toLocaleString('pt-BR', {currency: 'BRL', style: 'currency'})
+                const date = format(new Date(item.date), 'dd/MM/yyyy')
+                
+
+
+            
+                return {
+                    id: item.id,
+                    name: item.name,
+                    amount,
+                    type: item.type,
+                    category: item.category ,
+                    date
+                }
+                
+            })
+
+
+            console.log(transactionsFormatted, 'formatação')
+            setTransactionsData(transactionsFormatted)
+        
+
+
+        } catch (error) {
+            console.log(error, 'erro no loadtransaction')
         }
-    ]
+
+   }
+
+
+   useEffect(() => {
+         loadTransactions()
+
+   },[]) //ver aqui pois n está redezendo a lista de transações em tempo real quando adiciona uma nova transação
 
     return(
        <Container>
@@ -66,10 +85,6 @@ export function Dashboard() {
             </LogoutButton>
 
             </UserWrapper>
-
-
-          
-
             
         </Header>
 
@@ -86,8 +101,8 @@ export function Dashboard() {
 
 
             <TransactionList
-                data={TransactionsData}
-                keyExtractor={ (item) => item as TransactionProps['id'] }
+                data={transactionsData}
+                keyExtractor={ (item: any) => item.id }
                 renderItem={({item}) => <TransactionCard data={item as TransactionProps}/>}
                
             />

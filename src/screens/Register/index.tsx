@@ -15,6 +15,7 @@ import { storeData } from "../../asyncStorage/storeData";
 import { TransactionProps } from "../Dashboard";
 import { TransactionCardProps } from "../../components/TransactionCard";
 import { getData } from "../../asyncStorage/getData";
+import { useNavigation } from "@react-navigation/native";
 
 type FormData = { // devem ser os msm nomes dos names nos inputs
     name: string;
@@ -30,7 +31,7 @@ const schema = Yup.object().shape({
 
 export function Register() {
 
-    const {control, handleSubmit, formState: {errors}} = useForm<FormData | any>({
+    const {control, handleSubmit, reset, formState: {errors}} = useForm<FormData | any>({
         resolver: yupResolver(schema)
     });
     const [isActiveTransactionType, setIsActiveTransactionType] = useState('');
@@ -43,10 +44,12 @@ export function Register() {
         
     });
 
-    const onSubmit = (data: FormData) => console.log(data);
+    const navigation = useNavigation()    
+
+   
 
 
-    function handleTransactionTypeSelect(type: 'income' | 'outcome') {
+    function handleTransactionTypeSelect(type: 'positive' | 'negative' ) {
         setIsActiveTransactionType(type);
     }
 
@@ -60,7 +63,7 @@ export function Register() {
         
     }
 
-    function handleRegister(form: FormData) {
+    async function handleRegister(form: FormData) {
 
         if(!isActiveTransactionType)
             return AlertComponent({title: "", message: "Selecione o tipo da transação"});
@@ -73,15 +76,29 @@ export function Register() {
             id: String(uuid.v4()),
             name: form.name,
             amount: form.amount,
-            transactionType: isActiveTransactionType,
+            type: isActiveTransactionType,
             category: category.key,
             date: new Date()
         
         }
 
-        console.log(data);
-        storeData(data)
+     
+        try {
+            await storeData(data)
+            console.log(data)
+            setCategory({
+                key: 'category',
+                name: 'Categoria',
+            })
+            setIsActiveTransactionType('')
+            reset();
+            navigation.navigate('Listagem')
 
+        }catch(e){
+            console.log(e)
+
+        }
+        
 
     }
 
@@ -120,16 +137,16 @@ export function Register() {
                             />
                             <TransactionTypeFields>
                             <TransactionTypeButton
-                                isActive={isActiveTransactionType === "income"}
+                                isActive={isActiveTransactionType === "positive"}
                                 title="Entrada"
                                 type="up"
-                                onPress={() => handleTransactionTypeSelect("income")}
+                                onPress={() => handleTransactionTypeSelect("positive")}
                             />
                             <TransactionTypeButton
-                                isActive={isActiveTransactionType === "outcome"}
+                                isActive={isActiveTransactionType === "negative"}
                                 title="Saída"
                                 type="down"
-                                onPress={() => handleTransactionTypeSelect("outcome")}
+                                onPress={() => handleTransactionTypeSelect("negative")}
                             />
                             </TransactionTypeFields>
                             <CategorySelectButton

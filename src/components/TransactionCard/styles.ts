@@ -5,7 +5,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 
 
 interface AmountStyleProps {
-    type: 'positive' | 'negative';
+    type: 'positive' | 'negative' ;
 }
 
 export const Container = styled.View`
