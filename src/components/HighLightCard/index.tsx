@@ -25,7 +25,7 @@ export function HighLightCard({ title, amount, lastTransaction, type}: HighLight
             </Header>
 
             <Footer>
-                <Amount type={type}>R$ {amount}</Amount>
+                <Amount type={type}>{amount}</Amount>
                 <LastTransaction type={type}>{lastTransaction}</LastTransaction>
             </Footer>
 
